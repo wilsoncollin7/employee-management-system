@@ -169,6 +169,7 @@ const addDepartment = function() {
 const addRole = function() {
 
     let departmentList = [];
+
     connection.query(`SELECT * FROM department`, (err, res) => {
         if (err) throw err;
         res.forEach((item) => {
@@ -178,7 +179,7 @@ const addRole = function() {
     
     inquirer.prompt(prompt.addRole(departmentList))
     .then((answers) => {
-        let department = parseInt(answers.role_department)
+        let department = parseInt(answers.role_department);
         connection.query(
             "INSERT INTO role SET ?", 
             {
@@ -198,4 +199,31 @@ const addRole = function() {
 
 const updateEmployRole = function() {
 
+    let employeeList = [];
+    let roleList = [];
+
+    connection.query(`SELECT id, first_name, last_name FROM employee`, (err, res) => {
+        if (err) throw err;
+        res.forEach((item) => {
+            employeeList.push(`${item.id} ${item.first_name} ${item.last_name}`);
+        })
+    });
+    connection.query(`SELECT id, title FROM role`, (err, res) => {
+        if (err) throw err;
+        res.forEach((item) => {
+            roleList.push(`${item.id} ${item.title}`);
+        })
+    });
+
+    inquirer.prompt(prompt.updateEmployeeRole(employeeList, roleList))
+    .then((answers) => {
+        let role = parseInt(answers.new_role);
+        let employee = parseInt(answers.employee_pick);
+        connection.query(`UPDATE employee SET role_id = ${role} WHERE id = ${employee}`), (err, res) => {
+            if (err) throw err;
+            console.log("--------------------------------------------------------------------------------------------");
+            console.log(res.affectedRows + " role updated!");
+            viewAllEmploy();
+        }
+    });
 };

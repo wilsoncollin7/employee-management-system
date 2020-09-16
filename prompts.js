@@ -92,12 +92,11 @@ module.exports = {
             type: "input",
             name: "role_salary",
             message: "What is the roles SALARY?",
-            validate: (value) => {
-                if (value === "" || value === null) {
-                    return "Salary cannot be empty."
-                } else {
-                    return true;
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                  return true;
                 }
+                return false;
             }
         },
         {
@@ -105,6 +104,21 @@ module.exports = {
             name: "role_department",
             message: "What is the roles DEPARTMENT?",
             choices: departmentList
+        }
+    ],
+
+    updateEmployeeRole: (employeeList, roleList) => [
+        {
+            type: "list",
+            name: "employee_pick",
+            message: "Choose an employee to update",
+            choices: employeeList
+        },
+        {
+            type: "list",
+            name: "new_role",
+            message: "Choose new role",
+            choices: roleList,
         }
     ]
 
