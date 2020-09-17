@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-
+ 
 const prompt = require("./prompts");
 
 const connection = mysql.createConnection({
@@ -12,9 +12,20 @@ const connection = mysql.createConnection({
     database: "employees_db"
 });
 
+
+
 connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
+    console.log("--------------------------------------------------------------------------------------------");
+    console.log(`
+        _____ __  __ ____  _     _____   _______ _____   __  __    _    _   _    _    ____ _____ ____
+        | ____|  \/  |  _ \| |   / _ \ \ / / ____| ____| |  \/  |  / \  | \ | |  / \  / ___| ____|  _ \
+        |  _| | |\/| | |_) | |  | | | \ V /|  _| |  _|   | |\/| | / _ \ |  \| | / _ \| |  _|  _| | |_) |
+        | |___| |  | |  __/| |__| |_| || | | |___| |___  | |  | |/ ___ \| |\  |/ ___ \ |_| | |___|  _ <
+        |_____|_|  |_|_|   |_____\___/ |_| |_____|_____| |_|  |_/_/   \_\_| \_/_/   \_\____|_____|_| \_\ 
+    `);
+    console.log("--------------------------------------------------------------------------------------------\n");
     homePage();
 });
 
@@ -42,6 +53,9 @@ function homePage() {
         break;
       case "Update employee role":
         updateEmployRole();
+        break;
+      case "Delete employee":
+        deleteEmployee();
         break;
       case "Exit":
         console.log("\n-----Goodbye!-----")
@@ -202,7 +216,7 @@ const updateEmployRole = function() {
     let emplyList = [];
     let roleList = [];
 
-    connection.query(`SELECT id, first_name, last_name FROM employee`, (err, res) => {
+    connection.query(`SELECT * FROM employee`, (err, res) => {
         if (err) throw err;
         res.forEach((item) => {
             emplyList.push(`${item.id} ${item.first_name} ${item.last_name}`);
@@ -219,7 +233,7 @@ const updateEmployRole = function() {
     .then((answers) => {
         let role = parseInt(answers.new_role);
         let employee = parseInt(answers.employee_pick);
-        connection.query(`UPDATE employee SET role_id = ${role} WHERE id = ${employee}`), (err, res) => {
+        connection.query(`UPDATE employee SET role_id = ${role} WHERE id = ${employee};`), (err, res) => {
             if (err) throw err;
             console.log("--------------------------------------------------------------------------------------------");
             console.log(res.affectedRows + " role updated!");
@@ -228,3 +242,27 @@ const updateEmployRole = function() {
     });
 };
 
+const deleteEmployee = function() {
+
+    let emplyList = [];
+
+    connection.query(`SELECT * FROM employee`, (err, res) => {
+        if (err) throw err;
+        res.forEach((item) => {
+            emplyList.push(`${item.id} ${item.first_name} ${item.last_name}`);
+        })
+    });
+
+    inquirer.prompt(prompt.deletEmploy(emplyList))
+    .then((answer) => {
+        
+        let employee = parseInt(answer.employee_pick);
+        console.log("made it here")
+        connection.query(`DELETE FROM employee WHERE id = ${employee}`), (err, res) => {
+            if (err) throw err;
+            console.log("--------------------------------------------------------------------------------------------");
+            console.log(res.affectedRows + " employee deleted!");
+            viewAllEmploy();
+        }
+    })
+}

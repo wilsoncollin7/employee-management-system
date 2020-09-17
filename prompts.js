@@ -12,6 +12,7 @@ module.exports = {
           "Add department",
           "Add role",
           "Update employee role",
+          "Delete employee",
           "Exit"
         ]
     },
@@ -110,8 +111,7 @@ module.exports = {
     updateRole: (employeeList, roleList) => [
         {
             type: "confirm",
-            name: "confirm",
-            messsage: "Do you want to update a emplpoyee?"
+            name: "Do you want to update a emplpoyee?"
         },
         {
             type: "list",
@@ -124,6 +124,19 @@ module.exports = {
             name: "new_role",
             message: "Choose new role",
             choices: roleList,
+        }
+    ],
+
+    deletEmploy: (employeeList) => [
+        {
+            type: "confirm",
+            name: "Do you want to delete an emplpoyee?"
+        },
+        {
+            type: "list",
+            name: "employee_pick",
+            message: "Choose an employee to delete:",
+            choices: employeeList
         }
     ]
 
