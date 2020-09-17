@@ -1,3 +1,6 @@
+
+// -----MODULE FOR THE PROMPTS-----
+
 module.exports = {
 
     main: {
@@ -16,6 +19,8 @@ module.exports = {
           "Exit"
         ]
     },
+
+    // -----ADD EMPLOYEE-----
 
     addEmployee: (departmentList, roleList, managerList) => [
         {
@@ -62,6 +67,8 @@ module.exports = {
         }
     ],
 
+    // -----ADD DEPARTMENT-----
+
     addDepartment :
     {
         type: "input",
@@ -75,6 +82,8 @@ module.exports = {
             }
         }
     },
+
+    // -----ADD ROLE-----
 
     addRole: (departmentList) => [
         {
@@ -108,6 +117,8 @@ module.exports = {
         }
     ],
 
+    // -----UPDATE ROLE-----
+
     updateRole: (employeeList, roleList) => [
         {
             type: "confirm",
@@ -127,6 +138,8 @@ module.exports = {
         }
     ],
 
+    // -----DELETE EMPLOYEE-----
+
     deletEmploy: (employeeList) => [
         {
             type: "confirm",
@@ -139,5 +152,4 @@ module.exports = {
             choices: employeeList
         }
     ]
-
 };

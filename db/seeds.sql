@@ -1,3 +1,6 @@
+
+-- -----SEEDS TO START UP DATABASE-----
+
 -- department seeds
 INSERT INTO department (name) VALUES ("Sales");
 INSERT INTO department (name) VALUES ("Engineering");

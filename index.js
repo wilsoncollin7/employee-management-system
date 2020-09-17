@@ -2,7 +2,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
  
-const prompt = require("./prompts");
+const prompt = require("./assets/prompts");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -13,6 +13,7 @@ const connection = mysql.createConnection({
 });
 
 
+// -----MAIN CONNECTION-----
 
 connection.connect(function(err) {
     if (err) throw err;
@@ -35,6 +36,8 @@ connection.connect(function(err) {
     console.log("--------------------------------------------------------------------------------------------\n");
     homePage();
 });
+
+// -----HOMEPAGE FUNCTION DISPLAYS THE CHOICES-----
 
 function homePage() {
     inquirer.prompt(prompt.main)
@@ -65,18 +68,21 @@ function homePage() {
         deleteEmployee();
         break;
       case "Exit":
-        console.log("\n-----Goodbye!-----")
+        console.log(`
+          ------------------
+        -------Goodbye!-------
+          ------------------`)
         connection.end();
         break;
       }
     });
 };
 
+// -----VIEW ALL EMPLOYEES FUNCTION-----
 
 const viewAllEmploy = function() {
     var query = `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager `;
     query += `FROM employee e LEFT JOIN role r ON e.role_id = r.id LEFT JOIN department d ON d.id = r.department_id LEFT JOIN employee m ON m.id = e.manager_id`;
-
     connection.query(query, (err, res) => {
         if (err) throw err;
 
@@ -90,9 +96,10 @@ const viewAllEmploy = function() {
     })
 };
 
+// -----VIEW ALL DEPARTMENTS FUNCTION-----
+
 const viewDepart = function() {
     var query = `SELECT * FROM department`;
-
     connection.query(query, (err, res) => {
         if (err) throw err;
 
@@ -106,9 +113,10 @@ const viewDepart = function() {
     })
 };
 
+// -----VIEW ALL ROLES FUNCTION-----
+
 const viewRoles = function() {
     var query = `SELECT r.id, r.title, r.salary, d.name AS department FROM role r LEFT JOIN department d ON d.id = r.department_id`;
-
     connection.query(query, (err, res) => {
         if (err) throw err;
 
@@ -122,12 +130,12 @@ const viewRoles = function() {
     })
 };
 
-const addEmployee = function() {
+// -----ADD EMPLOYEE FUNCTION-----
 
+const addEmployee = function() {
     let departmentList = [];
     let roleList = [];
     let managerList = [];
-
     connection.query(`SELECT * FROM department`, (err, res) => {
         if (err) throw err;
         res.forEach((item) => {
@@ -146,7 +154,6 @@ const addEmployee = function() {
             managerList.push(`${item.id} ${item.first_name} ${item.last_name}`);
         })
     });
-
     inquirer.prompt(prompt.addEmployee(departmentList, roleList, managerList))
     .then((answers) => {
         let role = parseInt(answers.role);
@@ -169,6 +176,8 @@ const addEmployee = function() {
     });
 };
 
+// -----ADD DEPARTMENT FUNCTION-----
+
 const addDepartment = function() {
     inquirer.prompt(prompt.addDepartment)
     .then((answer) => {
@@ -187,17 +196,16 @@ const addDepartment = function() {
     });
 };
 
+// -----ADD ROLE FUNCTION-----
+
 const addRole = function() {
-
     let departmentList = [];
-
     connection.query(`SELECT * FROM department`, (err, res) => {
         if (err) throw err;
         res.forEach((item) => {
             departmentList.push(`${item.id} ${item.name}`);
         })
     });
-    
     inquirer.prompt(prompt.addRole(departmentList))
     .then((answers) => {
         let department = parseInt(answers.role_department);
@@ -218,11 +226,11 @@ const addRole = function() {
     });
 };
 
-const updateEmployRole = function() {
+// -----UPDATE EMPLOYEE ROLE FUNCTION-----
 
+const updateEmployRole = function() {
     let emplyList = [];
     let roleList = [];
-
     connection.query(`SELECT * FROM employee`, (err, res) => {
         if (err) throw err;
         res.forEach((item) => {
@@ -235,7 +243,6 @@ const updateEmployRole = function() {
             roleList.push(`${item.id} ${item.title}`);
         })
     });
-
     inquirer.prompt(prompt.updateRole(emplyList, roleList))
     .then((answers) => {
         let role = parseInt(answers.new_role);
@@ -249,20 +256,18 @@ const updateEmployRole = function() {
     });
 };
 
+// -----DELETE EMPLOYEE FUNCTION-----
+
 const deleteEmployee = function() {
-
     let emplyList = [];
-
     connection.query(`SELECT * FROM employee`, (err, res) => {
         if (err) throw err;
         res.forEach((item) => {
             emplyList.push(`${item.id} ${item.first_name} ${item.last_name}`);
         })
     });
-
     inquirer.prompt(prompt.deletEmploy(emplyList))
     .then((answer) => {
-        
         let employee = parseInt(answer.employee_pick);
         console.log("made it here")
         console.log(employee)
