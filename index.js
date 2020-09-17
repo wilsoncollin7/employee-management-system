@@ -199,13 +199,13 @@ const addRole = function() {
 
 const updateEmployRole = function() {
 
-    let employeeList = [];
+    let emplyList = [];
     let roleList = [];
 
     connection.query(`SELECT id, first_name, last_name FROM employee`, (err, res) => {
         if (err) throw err;
         res.forEach((item) => {
-            employeeList.push(`${item.id} ${item.first_name} ${item.last_name}`);
+            emplyList.push(`${item.id} ${item.first_name} ${item.last_name}`);
         })
     });
     connection.query(`SELECT id, title FROM role`, (err, res) => {
@@ -215,7 +215,7 @@ const updateEmployRole = function() {
         })
     });
 
-    inquirer.prompt(prompt.updateEmployeeRole(employeeList, roleList))
+    inquirer.prompt(prompt.updateRole(emplyList, roleList))
     .then((answers) => {
         let role = parseInt(answers.new_role);
         let employee = parseInt(answers.employee_pick);
@@ -227,3 +227,4 @@ const updateEmployRole = function() {
         }
     });
 };
+

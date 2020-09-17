@@ -107,11 +107,16 @@ module.exports = {
         }
     ],
 
-    updateEmployeeRole: (employeeList, roleList) => [
+    updateRole: (employeeList, roleList) => [
+        {
+            type: "confirm",
+            name: "confirm",
+            messsage: "Do you want to update a emplpoyee?"
+        },
         {
             type: "list",
             name: "employee_pick",
-            message: "Choose an employee to update",
+            message: "Choose an employee to update:",
             choices: employeeList
         },
         {
